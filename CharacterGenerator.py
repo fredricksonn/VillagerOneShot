@@ -50,11 +50,11 @@ armorType = {'guard': {'chain shirt': 2,'breast plate':1},
              'farmer': {'no armor': 4, 'leather': 1}
                  }
 armorStats = {
-    'chain shirt'   : 13,
-    'breast plate'  : 14,
-    'leather'       : 11, 
-    'hide'          : 12, 
-    'no armor'      : 10,
+    'no armor'      : '+0', #10,
+    'leather'       : '+1', #11, 
+    'hide'          : '+2', #12, 
+    'chain shirt'   : '+3', #13,
+    'breast plate'  : '+4', #14,
     }
 
 def normalizeDict(d):
@@ -99,7 +99,7 @@ class character():
         self.weapon1 = {}
         self.weapon2 = {}
         self.race = 'human'
-        self.hp = 7
+        self.hp = 8
         self.level = 1 
         self.proficiency = 2
         
