@@ -72,7 +72,7 @@ def centeredCoordinates(m,f,img):
     return xText,yText
 
 def getPortrait(race=None,job=None):
-    filename = race + '\\' + job + '\\portrait1.png'
+    filename = '.\\images\\' + race + '\\' + job + '\\portrait1.png'
     if not isfile(filename):    
         filename = '.\images\Whos-That-Pokemon-1.jpg'
     return filename

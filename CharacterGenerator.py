@@ -9,7 +9,7 @@ import random
 
 raceDict = {'Dwarf': 5, 'Gnome': 20, 'Half-Elf': 10, 'Human': 50}
 occupationDict = {'guard': 3, 'hunter': 6, 'lord': 1, 'farmer':8, 'artisan': 4}
-names = ['name: ' for x in range(63)]
+names = ['name: ' for x in range(62)]
 healthMap = {'Dwarf': 2, 'Gnome': 0, 'Half-Elf': 0, 'Human': 1}
 speedMap = {'Dwarf': 25, 'Gnome': 25, 'Half-Elf': 30, 'Human': 30}
 
