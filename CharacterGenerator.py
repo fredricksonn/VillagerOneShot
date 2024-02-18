@@ -7,10 +7,30 @@ Created on Fri Dec  1 15:12:27 2023
 import json
 import random
 
-occupationDict = {'guard': 3, 'hunter': 6, 'lord': 1, 'farmer':8, 'artisan': 4}
 names = ['name: ' for x in range(62)]
-healthMap = {'Dwarf': 2, 'Gnome': 0, 'Half-Elf': 0, 'Human': 1}
-speedMap = {'Dwarf': 25, 'Gnome': 25, 'Half-Elf': 30, 'Human': 30}
+
+class baseCharacter():
+    def __init__(self, race = 'Human', speed = 30, health = 8):
+        self.race = race
+        self.speed = speed
+        self.health = health
+
+Dwarf = baseCharacter('Dwarf',25,10)
+HalfElf = baseCharacter('Half-Elf',30,9)
+Human = baseCharacter(health=9)
+Gnome = baseCharacter('Gnome',25,8)
+
+def retrieveRaceBase(r):
+    match r:
+        case "Dwarf":
+            return Dwarf
+        case "Half-Elf":
+            return HalfElf
+        case "Human":
+            return Human
+        case "Gnome":
+            return Gnome
+        
 
 inputFile = './inputs/characterSpecs.json'
 with open(inputFile, 'r') as handle:
@@ -78,8 +98,9 @@ def countOccupations(arr):
         else:
             d[a.occupation] = 1
     print('Occupation Demographics:')
-    for key in list(d.keys()): 
-        print("\t",key, ":", d[key])  
+    newD = dict(sorted(d.items(), key=lambda x: x[1], reverse=True))
+    for key in list(newD.keys()): 
+        print("\t",key, ":", newD[key])  
         
 def countRace(arr):
     d = {}
@@ -89,10 +110,12 @@ def countRace(arr):
         else:
             d[a.race] = 1
     print('Racial Demographics:')
-    for key in list(d.keys()): 
-        print("\t",key, ":", d[key])  
+    newD = dict(sorted(d.items(), key=lambda x: x[1], reverse=True))
+
+    for key in list(newD.keys()): 
+        print("\t",key, ":", newD[key])  
         
-occupationDict = normalizeDict(occupationDict)
+inputData['occupations'] = normalizeDict(inputData['occupations'])
 inputData['races'] = normalizeDict(inputData['races'])
     
 class character():
@@ -107,28 +130,26 @@ class character():
         self.race = 'human'
         self.hp = 8
         self.level = 1 
-        self.proficiency = 2
-        
+        self.proficiency = 2 
     def setLevel(self):
         self.level = random.choices([1,2],weights=[8,1], k=1)[0]
-    def setSpeed(self):
-        self.speed = speedMap[self.race]
     def setAC(self):
         self.ac = armorStats[self.armor]
-        
-    def drawHealth(self):
-        self.hp = self.hp + healthMap[self.race] + random.randrange(-1,3) + self.level
     def drawProficiency(self):
         self.proficiency = self.proficiency + random.randrange(-1,2)
-
     def drawOccupation(self):
-       self.occupation = random.choices(list(occupationDict.keys()),
-                                        weights=list(occupationDict.values()),
+       self.occupation = random.choices(list(inputData['occupations'].keys()),
+                                        weights=list(inputData['occupations'].values()),
                                         k=1)[0]
     def drawRace(self):
-       self.race = random.choices(list(inputData['races'].keys()),
+       r = random.choices(list(inputData['races'].keys()),
                                         weights=list(inputData['races'].values()),
                                         k=1)[0]
+       tempClass = retrieveRaceBase(r)
+       self.race = tempClass.race
+       self.speed = tempClass.speed
+       self.health = tempClass.health + random.randrange(-1,2) + self.level
+       
     
     def drawArmor(self):
         if self.occupation in list(armorType.keys()):
@@ -175,13 +196,11 @@ class character():
         return s1 + '\n'
         
 characters = []
-for name in names:
+for name in ['name: ' for x in range(inputData['numCharacters'])]:
     newCharacter = character(name)
     newCharacter.drawOccupation()
     newCharacter.drawRace()
     newCharacter.setLevel()
-    newCharacter.setSpeed()
-    newCharacter.drawHealth()
     newCharacter.drawArmor()
     newCharacter.setAC()
     newCharacter.setWeapon()
@@ -199,9 +218,6 @@ tim.weapon1 = {'name': 'tusk', 'range': 5, 'damage': '1d6+1', 'type': 'slashing'
 tim.weapon2 = {'name': 'attributes', 'charge': 'see PHB', 'relentless': 'see PHB'}
 characters.append(tim)
 
-
-
-#x = [print(c) for c in characters]
 charactersWithWeapons = [c for c in characters if c.weapon1 != {}]
 charactersWithArmor = [c for c in characters if c.armor != 'no armor']
 print(f'Total number of Characters: {len(characters)}')
