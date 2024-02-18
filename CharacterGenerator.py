@@ -7,13 +7,19 @@ Created on Fri Dec  1 15:12:27 2023
 import json
 import random
 
-raceDict = {'Dwarf': 5, 'Gnome': 20, 'Half-Elf': 10, 'Human': 50}
 occupationDict = {'guard': 3, 'hunter': 6, 'lord': 1, 'farmer':8, 'artisan': 4}
 names = ['name: ' for x in range(62)]
 healthMap = {'Dwarf': 2, 'Gnome': 0, 'Half-Elf': 0, 'Human': 1}
 speedMap = {'Dwarf': 25, 'Gnome': 25, 'Half-Elf': 30, 'Human': 30}
 
+inputFile = './inputs/characterSpecs.json'
+with open(inputFile, 'r') as handle:
+    rawInputs = [ json.loads(line) for line in handle ]
 
+inputData = rawInputs[0]
+for i,k in enumerate(list(rawInputs[0].keys())[:-1]):
+    inputData[k] = rawInputs[i+1]
+    
 weapon1Map = {'guard'   : ['pike','shortsword'], 
               'hunter'  : ['short bow','sling','torch'], 
               'artisan' : ['pin roller','light hammer','soup ladle'],
@@ -87,7 +93,7 @@ def countRace(arr):
         print("\t",key, ":", d[key])  
         
 occupationDict = normalizeDict(occupationDict)
-raceDict = normalizeDict(raceDict)
+inputData['races'] = normalizeDict(inputData['races'])
     
 class character():
     def __init__(self, n=''):
@@ -120,8 +126,8 @@ class character():
                                         weights=list(occupationDict.values()),
                                         k=1)[0]
     def drawRace(self):
-       self.race = random.choices(list(raceDict.keys()),
-                                        weights=list(raceDict.values()),
+       self.race = random.choices(list(inputData['races'].keys()),
+                                        weights=list(inputData['races'].values()),
                                         k=1)[0]
     
     def drawArmor(self):
